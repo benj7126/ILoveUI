@@ -7,8 +7,6 @@ function Element:new()
     element.parent = nil
 
     element.key = ""
-
-    element.toCodeFunctions = {}
     
     element.name = "UIElement"
 
@@ -81,6 +79,10 @@ end
 
 function Element:toCode()
     local str = "#="..self.name..":new();#.pos="..tostring(self.pos)..";"
+
+    if self.key ~= "" then
+        str = str.."Base:setKey("..self.key..",#);"
+    end
 
     for i, v in pairs(self.data) do
         if type(v) ~= "function" then

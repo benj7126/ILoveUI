@@ -3,7 +3,7 @@ local ElementController = {}
 function ElementController:new(base)
     local controller = {}
 
-    --controller.keys = {}
+    controller.keys = {}
 
     controller.base = base
     self.children = base.children
@@ -14,6 +14,10 @@ function ElementController:new(base)
     return controller
 end
 
+function ElementController:setKey(key, element)
+    element.key = key
+    self.keys[key] = element
+end
 function ElementController:getWorldPos()
     return Vector:new(0, 0)
 end
