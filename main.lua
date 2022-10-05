@@ -1,24 +1,20 @@
-require "vector"
-local Element = require("UIElement"):new()
-local _Rectangle = require("Elements.Rectangle")
-local _Text = require("Elements.Text")
+local base = require "controller"
 
-local el2 = _Rectangle:new()
-
-local txt = _Text:new()
-
-txt.data.Text = "Hej"
-
-txt.pos = Vector:new(10, 10)
-
-el2.data.Width = 100
-el2.data.Height = 100
-
-el2:setParent(Element)
-
-txt:setParent(el2)
-
-function love.draw()
-    Element.pos = Element.pos + Vector:new(1, 0)
-    Element:draw()
+local but = require("Elements.Button"):new()
+but.data.Size = Vector:new(100, 100)
+but.data.OnClickHook = function ()
+    but.data.Size.x = but.data.Size.x + 10
 end
+but:setParent(base)
+
+local txt = require("Elements.Text"):new()
+txt.data.Text = "Hello there, how you doing there, did you see me... yeah?"
+txt:setParent(but)
+
+--[[
+
+scorll - element that can scroll up and down, has a stencil border (like scale)
+list - just a list of things (so an array, that turns to visuals shit), then you can place it into a scroll element
+label - text you can click on to write on
+
+]]--

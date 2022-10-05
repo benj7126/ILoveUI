@@ -6,6 +6,8 @@ function Element:new()
     element.pos = Vector:new(0, 0)
     element.parent = nil
 
+    element.key = ""
+
     element.data = {} -- [name] = {data}
 
     element.children = {} -- [child] = isVisible (bool)
@@ -18,10 +20,19 @@ function Element:new()
     return element
 end
 
+function Element:eventChain(name, ...)
+    if self[name] then
+        self[name](self, ...)
+    end
+
+    for i, v in pairs(self.children) do
+        i:eventChain(name, ...)
+    end
+end
+
 function Element:draw()
     self:drawThis()
     for i, v in pairs(self.children) do
-        print(i)
         i:draw()
     end
 end
@@ -31,7 +42,6 @@ function Element:drawThis()
 end
 
 function Element:setParent(parent)
-    print(self.parent)
     if self.parent then
         self.parent.children[self] = nil
     end

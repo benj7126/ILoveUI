@@ -3,8 +3,8 @@ Vector = {}
 function Vector:new(x, y)
     local vec = {}
 
-    vec.x = x
-    vec.y = y
+    vec.x = x or 0
+    vec.y = y or 0
 
     setmetatable(vec, self)
     self.__index = self
