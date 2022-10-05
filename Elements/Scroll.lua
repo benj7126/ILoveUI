@@ -15,7 +15,7 @@ function Scroll:new()
     
     element.data["ScrollScale"] = -5
     
-    element.name = "Text"
+    element.name = "Scroll"
 
     setmetatable(element, self)
     self.__index = self
@@ -53,8 +53,6 @@ function Scroll:wheelmoved(x, y)
     if self.data["CheckBounds"] == false or (mx > pos.x and mx < pos.x + size.x and my > pos.y and my < pos.y + size.y) then
         self.data.CurScroll = math.min(math.max(self.data.CurScroll + y*self.data.ScrollScale, self.data.MinScroll), self.data.MaxScroll)
     end
-
-    print(self.data.CurScroll, y)
 end
 
 function Scroll:getWorldPos()

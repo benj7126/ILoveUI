@@ -5,7 +5,8 @@ function ElementList:new()
     local element = Element:new()
 
     element.data["AutoAddIncrement"] = true
-    element.data["Increment"] = 0
+    element.data["IncrementX"] = 0
+    element.data["IncrementY"] = 0
     
     element.name = "ElementList"
 
@@ -16,23 +17,26 @@ function ElementList:new()
 end
 
 function ElementList:draw()
-    local totalIncrement = 0
+    local totalIncrementX = 0
+    local totalIncrementY = 0
 
     for i, v in pairs(self.children) do
-        local addIncrement = self.data.Increment
+        local addIncrementY = self.data.IncrementY
+        local addIncrementX = self.data.IncrementX
 
         if self.data.AutoAddIncrement then
             if i.data.Size then
-                addIncrement = addIncrement + i.data.Size.y
+                addIncrementY = addIncrementY + i.data.Size.y
             end
         end
 
         i:draw()
-        love.graphics.translate(0, addIncrement)
-        totalIncrement = totalIncrement + addIncrement
+        love.graphics.translate(addIncrementX, addIncrementY)
+        totalIncrementX = totalIncrementX + addIncrementX
+        totalIncrementY = totalIncrementY + addIncrementY
     end
     
-    love.graphics.translate(0, -totalIncrement)
+    love.graphics.translate(-totalIncrementX, -totalIncrementY)
 end
 
 return ElementList

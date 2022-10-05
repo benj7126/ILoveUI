@@ -61,6 +61,36 @@ function Element:getWorldPos()
     return parentPos+self.pos
 end
 
+local function getCode(depth, element)
+    local str = (element:toCode()):gsub("#", "V"..depth)
+
+    local firstItter = true
+
+    for i, v in pairs(element.children) do
+        local nstr = getCode(depth+1, i)
+        if firstItter then
+            nstr = "local "..nstr
+            firstItter = false
+        end
+        
+        nstr = nstr.."V"..(depth+1)..":setParent(V"..depth..");"
+
+        str = str..nstr
+    end
+
+
+
+    return str
+end
+
+--[[
+function Element:clone()
+    local clone = loadstring("local "..getCode(0, self).."return V0;")()
+
+    return clone
+end
+]]--
+
 local function transformData(data, dataName)
     if dataName == "Color" then
         if #data == 4 then
