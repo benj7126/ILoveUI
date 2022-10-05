@@ -33,7 +33,7 @@ function Vector:__eq(vector)
 end
 
 function Vector:__tostring()
-    return self.x.." | "..self.y
+    return "Vector:new("..self.x..","..self.y..")"
 end
 
 return Vector

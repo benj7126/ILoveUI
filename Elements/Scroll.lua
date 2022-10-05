@@ -14,6 +14,8 @@ function Scroll:new()
     element.data["CheckBounds"] = true
     
     element.data["ScrollScale"] = -5
+    
+    element.name = "Text"
 
     setmetatable(element, self)
     self.__index = self

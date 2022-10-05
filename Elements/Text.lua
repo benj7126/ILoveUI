@@ -8,6 +8,8 @@ function Text:new()
     element.data["Font"] = love.graphics.newFont()
     element.data["Limit"] = 0
     element.data["Align"] = "left" -- center and right
+    
+    element.name = "Text"
 
     setmetatable(element, self)
     self.__index = self

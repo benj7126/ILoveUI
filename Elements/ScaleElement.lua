@@ -7,6 +7,8 @@ function ScaleElement:new()
     element.data["Size"] = Vector:new(0, 0)
     element.data["TargetSize"] = Vector:new(0, 0)
     
+    element.name = "ScaleElement"
+    
     setmetatable(element, self)
     self.__index = self
 

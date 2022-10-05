@@ -6,6 +6,8 @@ function Rectangle:new()
 
     element.data["Color"] = {1, 1, 1, 1}
     element.data["Size"] = Vector:new(0, 0)
+    
+    element.name = "Rectangle"
 
     setmetatable(element, self)
     self.__index = self

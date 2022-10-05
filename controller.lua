@@ -23,7 +23,7 @@ function love.run()
 					end
 				end
 				love.handlers[name](a,b,c,d,e,f)
-                Base:eventChain(name, a,b,c,d,e,f)
+                controller.base:eventChain(name, a,b,c,d,e,f)
 			end
 		end
 
@@ -33,7 +33,7 @@ function love.run()
 		-- Call update and draw
 		if love.update then love.update(dt) end -- will pass 0 if love.timer is disabled
 
-        Base:eventChain("update", dt)
+        controller.base:eventChain("update", dt)
 
 		if love.graphics and love.graphics.isActive() then
 			love.graphics.origin()
@@ -41,7 +41,7 @@ function love.run()
 			
 			if love.draw then love.draw() end -- might want to scrap love.draw
 			
-            Base:draw()
+            controller.base:draw()
 
 			love.graphics.present()
 		end

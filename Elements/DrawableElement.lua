@@ -8,6 +8,8 @@ function DrawableElement:new()
     element.data["TargetSize"] = Vector:new(0, 0)
     element.data["AutoTranslate"] = true
     element.data["DrawCall"] = function () end
+    
+    element.name = "DrawableElement"
 
     setmetatable(element, self)
     self.__index = self

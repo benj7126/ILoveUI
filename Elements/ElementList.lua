@@ -6,6 +6,8 @@ function ElementList:new()
 
     element.data["AutoAddIncrement"] = true
     element.data["Increment"] = 0
+    
+    element.name = "ElementList"
 
     setmetatable(element, self)
     self.__index = self

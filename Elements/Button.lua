@@ -5,6 +5,8 @@ function Button:new()
     local element = Rectangle:new()
 
     element.data["OnClickHook"] = function () end
+    
+    element.name = "Button"
 
     setmetatable(element, self)
     self.__index = self

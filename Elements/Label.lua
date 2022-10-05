@@ -15,6 +15,8 @@ function Label:new()
     element.data["WritingIndicator"] = "|"
 
     element.data["StopWritingOnEnter"] = true
+    
+    element.name = "Label"
 
     setmetatable(element, self)
     self.__index = self
