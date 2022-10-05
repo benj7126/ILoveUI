@@ -59,4 +59,8 @@ function Element:getWorldPos()
     return parentPos+self.pos
 end
 
+function Element:toCodeFrom()
+    
+end
+
 return Element

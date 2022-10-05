@@ -38,7 +38,11 @@ function DrawableElement:drawThis()
 
     love.graphics.setStencilTest()
 
-    love.graphics.origin()
+    love.graphics.scale(1/scaleX, 1/scaleY)
+
+    if self.data.AutoTranslate then
+        love.graphics.translate(-pos.x, -pos.y)
+    end
 end
 
 return DrawableElement

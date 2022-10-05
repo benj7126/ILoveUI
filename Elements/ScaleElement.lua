@@ -29,13 +29,12 @@ function ScaleElement:draw()
     love.graphics.scale(scaleX, scaleY)
 
     for i, v in pairs(self.children) do
-        print(i, "k")
         i:draw()
     end
 
     love.graphics.setStencilTest()
 
-    love.graphics.origin()
+    love.graphics.scale(1/scaleX, 1/scaleY)
 end
 
 return ScaleElement

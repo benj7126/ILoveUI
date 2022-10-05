@@ -4,7 +4,7 @@ local Button = Rectangle:new()
 function Button:new()
     local element = Rectangle:new()
 
-    element.data ["OnClickHook"] = function () end
+    element.data["OnClickHook"] = function () end
 
     setmetatable(element, self)
     self.__index = self

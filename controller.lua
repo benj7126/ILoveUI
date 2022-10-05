@@ -12,6 +12,7 @@ function love.run()
 
 	-- Main loop time.
 	return function()
+		
 		-- Process events.
 		if love.event then
 			love.event.pump()
@@ -31,14 +32,15 @@ function love.run()
 
 		-- Call update and draw
 		if love.update then love.update(dt) end -- will pass 0 if love.timer is disabled
+
         Base:eventChain("update", dt)
 
 		if love.graphics and love.graphics.isActive() then
 			love.graphics.origin()
 			love.graphics.clear(love.graphics.getBackgroundColor())
-
-
+			
 			if love.draw then love.draw() end -- might want to scrap love.draw
+			
             Base:draw()
 
 			love.graphics.present()
@@ -47,5 +49,7 @@ function love.run()
 		if love.timer then love.timer.sleep(0.001) end
 	end
 end
+
+love.keyboard.setKeyRepeat(true)
 
 return controller
