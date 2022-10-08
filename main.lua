@@ -1,8 +1,13 @@
 local Controller = require("controller")("UI.lua")
 
+local myController = require("ElementController"):new()
+local Base=modifyElement(myController.allElements.UIElement:new());
+myController.base = Base;
+
+local selectedElement = nil
+
 Controller:setKeyValue("window", "DrawCall", function ()
-    love.graphics.setColor(0, 0, 1)
-    love.graphics.rectangle("fill", 0, 0, 1920, 1080)
+    myController:draw()
 end)
 
 function love.keypressed(key)

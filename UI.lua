@@ -24,27 +24,24 @@ C:setKey("UI", OtherUI)
 
 OtherUI:setParent(SE)
 
--- local SideBar = Rectangle:new()
--- SideBar.data.Color = {0.5, 0.5, 0.5, 1}
--- SideBar.data.Size = Vector:new(1920/4, 1080)
--- SideBar:setParent(OtherUI)
+local SideBar = Rectangle:new() -- editing element
+SideBar.data.Color = {0.5, 0.5, 0.5, 1}
+SideBar.data.Size = Vector:new(1920/4, 1080)
+SideBar:setParent(OtherUI)
 
--- local SideBarDecor = Rectangle:new()
--- SideBarDecor.data.Color = {0.8, 0.8, 0.8, 0.8, 1}
--- SideBarDecor.pos = Vector:new(10, 10)
--- SideBarDecor.data.Size = Vector:new(1920/4-20, 1080-20)
--- SideBarDecor:setParent(SideBar)
+local SideBarDecor = ListElement:new()
+SideBarDecor:setParent(SideBar)
 
--- local uimessage = Rectangle:new()
--- uimessage.data.Color = {1, 1, 1, 1}
--- uimessage.pos = Vector:new(1920-122, 1080-20)
--- uimessage.data.Size = Vector:new(122, 20)
--- uimessage:setParent(OtherUI)
+local uimessage = Rectangle:new()
+uimessage.data.Color = {1, 1, 1, 1}
+uimessage.pos = Vector:new(1920-122, 1080-20)
+uimessage.data.Size = Vector:new(122, 20)
+uimessage:setParent(OtherUI)
 
--- local uimessageT = Text:new()
--- uimessageT.pos = Vector:new(2, 2)
--- uimessageT.data.Text = "press u to toggle ui"
--- uimessageT:setParent(uimessage)
+local uimessageT = Text:new()
+uimessageT.pos = Vector:new(2, 2)
+uimessageT.data.Text = "press u to toggle ui"
+uimessageT:setParent(uimessage)
 
 
 --[[

@@ -59,9 +59,7 @@ function ScaleElement:draw()
     love.graphics.translate(posDiff.x, posDiff.y)
     love.graphics.scale(scaleX, scaleY)
 
-    print("draw")
     for i, v in pairs(self:getChildPriorityList()) do
-        print(v.name, v.drawPriority)
         v:draw()
     end
 
