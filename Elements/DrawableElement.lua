@@ -32,19 +32,21 @@ function DrawableElement:drawThis()
 
     if self.data.KeepRatio then
         if scaleY < scaleX then scaleX = scaleY else scaleY = scaleX end
-
-        if self.data.Center then
-            if scaleX < orgScaleX then
-                --("a")
-                pos = pos + Vector:new((orgScaleX-scaleX)*targetSize.x/2, 0)
-            end
-            if scaleY < orgScaleY then
-                --print("b")
-                pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
-            end
+    end
+    
+    if self.data.Center then
+        if scaleX < orgScaleX then
+            --("a")
+            pos = pos + Vector:new((orgScaleX-scaleX)*targetSize.x/2, 0)
+        end
+        if scaleY < orgScaleY then
+            --print("b")
+            pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
         end
     end
+    print(pos.x, pos.y, targetSize.x*scaleX, targetSize.y*scaleY)
 
+    
     local stencilFunction = function () love.graphics.rectangle("fill", pos.x, pos.y, targetSize.x*scaleX, targetSize.y*scaleY) end
     love.graphics.stencil(stencilFunction, "increment", 1, true)
 

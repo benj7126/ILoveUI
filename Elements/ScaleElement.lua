@@ -37,14 +37,14 @@ function ScaleElement:draw()
 
     if self.data.KeepRatio then
         if scaleY < scaleX then scaleX = scaleY else scaleY = scaleX end
-
-        if self.data.Center then
-            if scaleX < orgScaleX then
-                pos = pos + Vector:new((orgScaleX-scaleX)*targetSize.x/2, 0)
-            end
-            if scaleY < orgScaleY then
-                pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
-            end
+    end
+    
+    if self.data.Center then
+        if scaleX < orgScaleX then
+            pos = pos + Vector:new((orgScaleX-scaleX)*targetSize.x/2, 0)
+        end
+        if scaleY < orgScaleY then
+            pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
         end
     end
 
