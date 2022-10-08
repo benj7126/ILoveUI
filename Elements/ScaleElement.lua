@@ -12,6 +12,8 @@ function ScaleElement:new()
     element.data["Center"] = true
     element.data["IgnoreOutside"] = true
     
+    element.data["KeepRatio"] = true
+    
     element.name = "ScaleElement"
     
     setmetatable(element, self)
@@ -21,8 +23,8 @@ function ScaleElement:new()
 end
 
 function ScaleElement:draw()
-    if not self.active then return end
-    if not self.visible then return end
+    if not self.isActive then return end
+    if not self.isVisible then return end
 
     local pos = self:localGetWorldPos()
     local size = self.data.Size
@@ -33,20 +35,25 @@ function ScaleElement:draw()
     local orgScaleX, orgScaleY = size.x/targetSize.x, size.y/targetSize.y
     local scaleX, scaleY = orgScaleX, orgScaleY
 
-    if scaleY < scaleX then scaleX = scaleY else scaleY = scaleX end
+    if self.data.KeepRatio then
+        if scaleY < scaleX then scaleX = scaleY else scaleY = scaleX end
 
-    if self.data.Center then
-        if scaleX < orgScaleX then
-            pos = pos + Vector:new((orgScaleX-scaleX)*targetSize.x/2, 0)
-        end
-        if scaleY < orgScaleY then
-            pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
+        if self.data.Center then
+            if scaleX < orgScaleX then
+                pos = pos + Vector:new((orgScaleX-scaleX)*targetSize.x/2, 0)
+            end
+            if scaleY < orgScaleY then
+                pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
+            end
         end
     end
 
-    love.graphics.stencil(function () love.graphics.rectangle("fill", pos.x, pos.y, targetSize.x*scaleX, targetSize.y*scaleY) end, "replace", 1)
+    local stencilFunction = function () love.graphics.rectangle("fill", pos.x, pos.y, targetSize.x*scaleX, targetSize.y*scaleY) end
+    love.graphics.stencil(stencilFunction, "increment", 1, true)
+
+    local mode, value = love.graphics.getStencilTest()
     
-    love.graphics.setStencilTest("greater", 0)
+    love.graphics.setStencilTest("equal", value+1)
 
     local posDiff = pos - self:localGetWorldPos()
     love.graphics.translate(posDiff.x, posDiff.y)
@@ -56,7 +63,8 @@ function ScaleElement:draw()
         i:draw()
     end
 
-    love.graphics.setStencilTest()
+    love.graphics.stencil(stencilFunction, "decrement", 1)
+    love.graphics.setStencilTest(mode, value)
 
     love.graphics.scale(1/scaleX, 1/scaleY)
     love.graphics.translate(-posDiff.x, -posDiff.y)
@@ -81,7 +89,7 @@ function ScaleElement:localGetWorldPos()
 end
 
 function ScaleElement:eventChain(name, x, y, ...)
-    if not self.active then return end
+    if not self.isActive then return end
     if not self:allowEvent(name) then return end
     
     if self[name] then

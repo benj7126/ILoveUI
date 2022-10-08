@@ -9,6 +9,8 @@ function DrawableElement:new()
     element.data["AutoTranslate"] = true
     element.data["DrawCall"] = function () end
     element.data["Center"] = false
+
+    element.data["KeepRatio"] = true
     
     element.name = "DrawableElement"
 
@@ -28,20 +30,27 @@ function DrawableElement:drawThis()
     local orgScaleX, orgScaleY = size.x/targetSize.x, size.y/targetSize.y
     local scaleX, scaleY = orgScaleX, orgScaleY
 
-    if scaleY < scaleX then scaleX = scaleY else scaleY = scaleX end
+    if self.data.KeepRatio then
+        if scaleY < scaleX then scaleX = scaleY else scaleY = scaleX end
 
-    if self.data.Center then
-        if scaleX < orgScaleX then
-            pos = pos + Vector:new((orgScaleX-scaleX)*targetSize.x/2, 0)
-        end
-        if scaleY < orgScaleY then
-            pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
+        if self.data.Center then
+            if scaleX < orgScaleX then
+                print("a")
+                pos = pos + Vector:new((orgScaleX-scaleX)*targetSize.x/2, 0)
+            end
+            if scaleY < orgScaleY then
+                print("b")
+                pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
+            end
         end
     end
 
-    love.graphics.stencil(function () love.graphics.rectangle("fill", pos.x, pos.y, targetSize.x*scaleX, targetSize.y*scaleY) end, "replace", 1)
+    local stencilFunction = function () love.graphics.rectangle("fill", pos.x, pos.y, targetSize.x*scaleX, targetSize.y*scaleY) end
+    love.graphics.stencil(stencilFunction, "increment", 1, true)
+
+    local mode, value = love.graphics.getStencilTest()
     
-    love.graphics.setStencilTest("greater", 0)
+    love.graphics.setStencilTest("equal", value+1)
 
     if self.data.AutoTranslate then
         local posDiff = pos - self:getWorldPos()
@@ -52,7 +61,8 @@ function DrawableElement:drawThis()
 
     self.data.DrawCall() -- draw function
 
-    love.graphics.setStencilTest()
+    love.graphics.stencil(stencilFunction, "decrement", 1)
+    love.graphics.setStencilTest(mode, value)
 
     love.graphics.scale(1/scaleX, 1/scaleY)
 

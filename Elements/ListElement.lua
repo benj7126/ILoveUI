@@ -17,23 +17,23 @@ function ElementList:new()
 end
 
 function ElementList:draw()
-    if not self.active then return end
-    if not self.visible then return end
+    if not self.isActive then return end
+    if not self.isVisible then return end
 
     local totalIncrementX = 0
     local totalIncrementY = 0
 
-    for i, v in pairs(self.children) do
+    for i, v in pairs(self:getChildPriorityList()) do
         local addIncrementY = self.data.IncrementY
         local addIncrementX = self.data.IncrementX
 
         if self.data.AutoAddIncrement then
-            if i.data.Size then
-                addIncrementY = addIncrementY + i.data.Size.y
+            if v.data.Size then
+                addIncrementY = addIncrementY + v.data.Size.y
             end
         end
 
-        i:draw()
+        v:draw()
         love.graphics.translate(addIncrementX, addIncrementY)
         totalIncrementX = totalIncrementX + addIncrementX
         totalIncrementY = totalIncrementY + addIncrementY
@@ -43,7 +43,7 @@ function ElementList:draw()
 end
 
 function ElementList:eventChain(name, x, y, ...)
-    if not self.active then return end
+    if not self.isActive then return end
     if not self:allowEvent(name) then return end
     
     if self[name] then

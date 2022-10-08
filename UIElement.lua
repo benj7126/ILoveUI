@@ -6,6 +6,11 @@ function Element:new()
     element.pos = Vector:new(0, 0)
     element.parent = nil
 
+    element.isVisible = true
+    element.isActive = true
+
+    element.drawPriority = 0
+
     element.key = ""
     
     element.name = "UIElement"
@@ -13,9 +18,6 @@ function Element:new()
     element.data = {} -- [name] = {data}
 
     element.children = {} -- [child] = isVisible (bool)
-
-    element.visible = true
-    element.active = true
 
     element.events = {}
 
@@ -27,6 +29,26 @@ function Element:new()
     return element
 end
 
+local function checkPriority(list, value)
+    for i , v in ipairs(list) do
+        if v.drawPriority > value then
+            return i
+        end
+    end
+    return #list+1
+end
+
+function Element:getChildPriorityList()
+    local priorityList = {}
+
+    for i, v in pairs(self.children) do
+        table.insert(priorityList, checkPriority(priorityList, i.drawPriority), i)
+    end
+    
+    return priorityList
+end
+
+
 function Element:allowEvent(name)
     if not self.events[name] then
         self.events[name] = true
@@ -36,7 +58,7 @@ function Element:allowEvent(name)
 end
 
 function Element:eventChain(name, ...)
-    if not self.active then return end
+    if not self.isActive then return end
     if not self:allowEvent(name) then return end
     
     if self[name] then
@@ -49,12 +71,12 @@ function Element:eventChain(name, ...)
 end
 
 function Element:draw()
-    if not self.active then return end
-    if not self.visible then return end
+    if not self.isActive then return end
+    if not self.isVisible then return end
 
     self:drawThis()
-    for i, v in pairs(self.children) do
-        i:draw()
+    for i, v in pairs(self:getChildPriorityList()) do
+        v:draw()
     end
 end
 
@@ -119,6 +141,10 @@ local function transformData(data, dataName)
         end
     end
 
+    if type(data) == "string" then
+        return '"'..data..'"'
+    end
+
     if tostring(data) or data.__tostring then
         return tostring(data)
     end
@@ -126,17 +152,36 @@ local function transformData(data, dataName)
     return "error"
 end
 
-function Element:toCode()
-    local str = "#="..self.name..":new();#.pos="..tostring(self.pos)..";"
+function Element:toCode(elements)
+    local defaultElement = elements[self.name]:new()
+    
+    local str = "#="..self.name..":new();"
+
+    if tostring(defaultElement.pos) ~= tostring(self.pos) then
+        str = str .. "#.pos="..tostring(self.pos)..";"
+    end
+    if defaultElement.isVisible ~= self.isVisible then
+        str = str .. "#.isVisible="..tostring(self.isVisible)..";"
+    end
+    if defaultElement.isActive ~= self.isActive then
+        str = str .. "#.isActive="..tostring(self.isActive)..";"
+    end
+    if defaultElement.drawPriority ~= self.drawPriority then
+        str = str .. "#.drawPriority="..tostring(self.drawPriority)..";"
+    end
 
     if self.key ~= "" then
-        str = str.."Base:setKey("..self.key..",#);"
+        str = str..'C:setKey("'..self.key..'",#);'
     end
 
     for i, v in pairs(self.data) do
+        print(transformData(v, i), transformData(defaultElement.data[i], i), "f", i)
         if type(v) ~= "function" then
-            local data = transformData(v, i)
-            str = str.."#.data."..i.."="..transformData(v, i)..";"
+            if transformData(v, i) ~= transformData(defaultElement.data[i], i) then
+                print("added")
+                local data = transformData(v, i)
+                str = str.."#.data."..i.."="..transformData(v, i)..";"
+            end
         end -- functions cant be saved
     end
 

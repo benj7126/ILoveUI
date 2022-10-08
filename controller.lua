@@ -1,36 +1,23 @@
 require "vector"
-local Button = require "Elements.Button"
-local DrawableElement = require "Elements.DrawableElement"
-local ElementList = require "Elements.ElementList"
-local Empty = require "Elements.Empty"
-local Label = require "Elements.Label"
-local Rectangle = require "Elements.Rectangle"
-local ScaleElement = require "Elements.ScaleElement"
-local Scroll = require "Elements.Scroll"
-local Text = require "Elements.Text"
 
-local UIElement = require "UIElement"
+local C = require("ElementController"):new()
 
-local Base = UIElement:new()
-local SE = ScaleElement:new()
-SE.data.Size = Vector:new(800, 600); SE.data.TargetSize = Vector:new(1920, 1080);
-SE:setParent(Base)
+local function setup(str)
+	if love.filesystem.getInfo(str) then
+		local contents, size = love.filesystem.read(str)
+		str = contents
+	end
 
-local controller = require("ElementController"):new(Base)
+	-- for i, v in pairs(C.allElements) do
+	-- 	str = string.gsub(str, "("..i..")", '["%1"]')
+	-- end
 
-local background = Rectangle:new()
-background.data.Size = Vector:new(1920, 1080)
-background:setParent(SE)
-
-local gameScreen = DrawableElement:new()
-gameScreen.pos = Vector:new(1920/4, 0)
-
-gameScreen.data.Size = Vector:new(1920/4*3, 1080); gameScreen.data.TargetSize = Vector:new(1080, 1080);
-controller:setKey("screen1", gameScreen)
-gameScreen:setParent(background)
-
-
-print(controller:toString())
+	-- print(str)
+	
+	C:loadFromString(str)
+	
+	return C
+end
 
 function love.run()
 	if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
@@ -53,7 +40,7 @@ function love.run()
 					end
 				end
 				love.handlers[name](a,b,c,d,e,f)
-                controller.base:eventChain(name, a,b,c,d,e,f)
+                C:eventChain(name, a,b,c,d,e,f)
 			end
 		end
 
@@ -63,7 +50,7 @@ function love.run()
 		-- Call update and draw
 		if love.update then love.update(dt) end -- will pass 0 if love.timer is disabled
 
-        controller.base:eventChain("update", dt)
+        C:eventChain("update", dt)
 
 		if love.graphics and love.graphics.isActive() then
 			love.graphics.origin()
@@ -71,7 +58,7 @@ function love.run()
 			
 			--if love.draw then love.draw() end -- might want to scrap love.draw
 			
-            controller.base:draw()
+            C:draw()
 
 			love.graphics.present()
 		end
@@ -82,4 +69,4 @@ end
 
 love.keyboard.setKeyRepeat(true)
 
-return controller
+return setup

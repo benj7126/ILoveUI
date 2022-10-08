@@ -1,0 +1,17 @@
+local V0=UIElement:new();
+local V1=ScaleElement:new();
+V1.data.TargetSize=Vector:new(1920,1080);
+V1.data.Size=Vector:new(800,600);
+local V2=Rectangle:new();
+V2.data.Size=Vector:new(1920,1080);
+local V3=DrawableElement:new();
+V3.drawPriority=10;
+C:setKey("screen1",V3);
+V3.data.TargetSize=Vector:new(1080,1080);
+V3.data.KeepRatio=false;
+V3.data.Size=Vector:new(1920,1080);
+V3.data.Center=true;
+V3:setParent(V2);
+V2:setParent(V1);
+V1:setParent(V0);
+return V0;

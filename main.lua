@@ -1,15 +1,17 @@
-local Base = require "controller"
+local Controller = require("controller")("UI")
 
-for i, v in pairs(Base.keys) do print(i, v) end
+local hax = 0
 
-Base.keys["screen1"].data.DrawCall = function ()
+Controller:setKeyValue("screen1", "DrawCall", function ()
     love.graphics.setColor(0, 0, 1)
-    love.graphics.rectangle("fill", 0, 0, 50000, 5000)
-end
+    love.graphics.rectangle("fill", hax, 0, 100, 100)
+end)
 
 function love.keypressed(key)
     if key == "a" then
         love.event.push("resize")
         love.window.setFullscreen( not love.window.getFullscreen() )
+    elseif key == "d" then
+        hax = hax + 10
     end
 end
