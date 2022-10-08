@@ -42,7 +42,7 @@ function ElementController:loadFromString(str)
 
     self.children = self.base
 
-    print(self:toString())
+    --print(self:toString())
 end
 
 function ElementController:setKey(key, element)

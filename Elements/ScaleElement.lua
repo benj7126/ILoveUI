@@ -59,11 +59,13 @@ function ScaleElement:draw()
     love.graphics.translate(posDiff.x, posDiff.y)
     love.graphics.scale(scaleX, scaleY)
 
-    for i, v in pairs(self.children) do
-        i:draw()
+    print("draw")
+    for i, v in pairs(self:getChildPriorityList()) do
+        print(v.name, v.drawPriority)
+        v:draw()
     end
 
-    love.graphics.stencil(stencilFunction, "decrement", 1)
+    love.graphics.stencil(stencilFunction, "decrement", 1, true)
     love.graphics.setStencilTest(mode, value)
 
     love.graphics.scale(1/scaleX, 1/scaleY)
@@ -130,12 +132,6 @@ function ScaleElement:eventChain(name, x, y, ...)
             i:eventChain(name, ...)
         end
     end
-end
-
-function ScaleElement:resize(w, h)
-    w, h = love.graphics.getWidth(), love.graphics.getHeight()
-    print(w, h )
-    self.data.Size = Vector:new(w, h)
 end
 
 return ScaleElement

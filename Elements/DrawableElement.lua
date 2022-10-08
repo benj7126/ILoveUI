@@ -35,11 +35,11 @@ function DrawableElement:drawThis()
 
         if self.data.Center then
             if scaleX < orgScaleX then
-                print("a")
+                --("a")
                 pos = pos + Vector:new((orgScaleX-scaleX)*targetSize.x/2, 0)
             end
             if scaleY < orgScaleY then
-                print("b")
+                --print("b")
                 pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
             end
         end
@@ -61,14 +61,14 @@ function DrawableElement:drawThis()
 
     self.data.DrawCall() -- draw function
 
-    love.graphics.stencil(stencilFunction, "decrement", 1)
+    love.graphics.stencil(stencilFunction, "decrement", 1, true)
     love.graphics.setStencilTest(mode, value)
 
     love.graphics.scale(1/scaleX, 1/scaleY)
 
     if self.data.AutoTranslate then
         local posDiff = pos - self:getWorldPos()
-        love.graphics.translate(posDiff.x, posDiff.y)
+        love.graphics.translate(-posDiff.x, -posDiff.y)
     end
 end
 

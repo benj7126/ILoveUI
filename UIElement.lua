@@ -175,10 +175,10 @@ function Element:toCode(elements)
     end
 
     for i, v in pairs(self.data) do
-        print(transformData(v, i), transformData(defaultElement.data[i], i), "f", i)
+        --print(transformData(v, i), transformData(defaultElement.data[i], i), "f", i)
         if type(v) ~= "function" then
             if transformData(v, i) ~= transformData(defaultElement.data[i], i) then
-                print("added")
+                --print("added")
                 local data = transformData(v, i)
                 str = str.."#.data."..i.."="..transformData(v, i)..";"
             end
