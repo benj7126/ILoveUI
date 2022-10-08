@@ -24,6 +24,9 @@ function Scroll:new()
 end
 
 function Scroll:draw()
+    if not self.active then return end
+    if not self.visible then return end
+    
     if self.data["Stenscil"] == false then
         for i, v in pairs(self.children) do
             i:draw()

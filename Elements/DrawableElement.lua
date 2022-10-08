@@ -8,6 +8,7 @@ function DrawableElement:new()
     element.data["TargetSize"] = Vector:new(0, 0)
     element.data["AutoTranslate"] = true
     element.data["DrawCall"] = function () end
+    element.data["Center"] = false
     
     element.name = "DrawableElement"
 
@@ -24,14 +25,27 @@ function DrawableElement:drawThis()
 
     if targetSize.x == 0 or targetSize.y == 0 then return end
 
-    local scaleX, scaleY = size.x/targetSize.x, size.y/targetSize.y
+    local orgScaleX, orgScaleY = size.x/targetSize.x, size.y/targetSize.y
+    local scaleX, scaleY = orgScaleX, orgScaleY
 
-    love.graphics.stencil(function () love.graphics.rectangle("fill", 0, 0, size.x, size.y) end, "replace", 1)
+    if scaleY < scaleX then scaleX = scaleY else scaleY = scaleX end
+
+    if self.data.Center then
+        if scaleX < orgScaleX then
+            pos = pos + Vector:new((orgScaleX-scaleX)*targetSize.x/2, 0)
+        end
+        if scaleY < orgScaleY then
+            pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
+        end
+    end
+
+    love.graphics.stencil(function () love.graphics.rectangle("fill", pos.x, pos.y, targetSize.x*scaleX, targetSize.y*scaleY) end, "replace", 1)
     
     love.graphics.setStencilTest("greater", 0)
 
     if self.data.AutoTranslate then
-        love.graphics.translate(pos.x, pos.y)
+        local posDiff = pos - self:getWorldPos()
+        love.graphics.translate(posDiff.x, posDiff.y)
     end
     
     love.graphics.scale(scaleX, scaleY)
@@ -43,7 +57,8 @@ function DrawableElement:drawThis()
     love.graphics.scale(1/scaleX, 1/scaleY)
 
     if self.data.AutoTranslate then
-        love.graphics.translate(-pos.x, -pos.y)
+        local posDiff = pos - self:getWorldPos()
+        love.graphics.translate(posDiff.x, posDiff.y)
     end
 end
 

@@ -4,7 +4,7 @@ local Button = Rectangle:new()
 function Button:new()
     local element = Rectangle:new()
 
-    element.data["OnClickHook"] = function () end
+    element.data["OnClickHook"] = function () print("a") end
     
     element.name = "Button"
 
@@ -15,6 +15,7 @@ function Button:new()
 end
 
 function Button:mousepressed(x, y, b)
+    print(x, y, self.name)
     local pos = self:getWorldPos()
     local size = self.data.Size
 

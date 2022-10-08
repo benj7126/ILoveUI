@@ -17,6 +17,9 @@ function ElementList:new()
 end
 
 function ElementList:draw()
+    if not self.active then return end
+    if not self.visible then return end
+
     local totalIncrementX = 0
     local totalIncrementY = 0
 
@@ -37,6 +40,40 @@ function ElementList:draw()
     end
     
     love.graphics.translate(-totalIncrementX, -totalIncrementY)
+end
+
+function ElementList:eventChain(name, x, y, ...)
+    if not self.active then return end
+    if not self:allowEvent(name) then return end
+    
+    if self[name] then
+        self[name](self, ...)
+    end
+    if name == "mousepressed" or name == "mousemoved" or name == "mousereleased" then
+        local totalIncrementX = 0
+        local totalIncrementY = 0
+
+        for i, v in pairs(self.children) do
+            local addIncrementY = self.data.IncrementY
+            local addIncrementX = self.data.IncrementX
+
+            if self.data.AutoAddIncrement then
+                if i.data.Size then
+                    addIncrementY = addIncrementY + i.data.Size.y
+                end
+            end
+        
+            i:eventChain(name, x-totalIncrementX, y-totalIncrementY, ...)
+            
+            totalIncrementX = totalIncrementX + addIncrementX
+            totalIncrementY = totalIncrementY + addIncrementY
+        end
+
+    else
+        for i, v in pairs(self.children) do
+            i:eventChain(name, ...)
+        end
+    end
 end
 
 return ElementList

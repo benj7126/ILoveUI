@@ -14,6 +14,11 @@ function Element:new()
 
     element.children = {} -- [child] = isVisible (bool)
 
+    element.visible = true
+    element.active = true
+
+    element.events = {}
+
     --element.parameters = {} not a thing for now...
 
     setmetatable(element, self)
@@ -22,7 +27,18 @@ function Element:new()
     return element
 end
 
+function Element:allowEvent(name)
+    if not self.events[name] then
+        self.events[name] = true
+    end
+
+    return self.events[name]
+end
+
 function Element:eventChain(name, ...)
+    if not self.active then return end
+    if not self:allowEvent(name) then return end
+    
     if self[name] then
         self[name](self, ...)
     end
@@ -33,6 +49,9 @@ function Element:eventChain(name, ...)
 end
 
 function Element:draw()
+    if not self.active then return end
+    if not self.visible then return end
+
     self:drawThis()
     for i, v in pairs(self.children) do
         i:draw()

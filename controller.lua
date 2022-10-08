@@ -1,6 +1,36 @@
 require "vector"
-local Base = require("UIElement"):new()
+local Button = require "Elements.Button"
+local DrawableElement = require "Elements.DrawableElement"
+local ElementList = require "Elements.ElementList"
+local Empty = require "Elements.Empty"
+local Label = require "Elements.Label"
+local Rectangle = require "Elements.Rectangle"
+local ScaleElement = require "Elements.ScaleElement"
+local Scroll = require "Elements.Scroll"
+local Text = require "Elements.Text"
+
+local UIElement = require "UIElement"
+
+local Base = UIElement:new()
+local SE = ScaleElement:new()
+SE.data.Size = Vector:new(800, 600); SE.data.TargetSize = Vector:new(1920, 1080);
+SE:setParent(Base)
+
 local controller = require("ElementController"):new(Base)
+
+local background = Rectangle:new()
+background.data.Size = Vector:new(1920, 1080)
+background:setParent(SE)
+
+local gameScreen = DrawableElement:new()
+gameScreen.pos = Vector:new(1920/4, 0)
+
+gameScreen.data.Size = Vector:new(1920/4*3, 1080); gameScreen.data.TargetSize = Vector:new(1080, 1080);
+controller:setKey("screen1", gameScreen)
+gameScreen:setParent(background)
+
+
+print(controller:toString())
 
 function love.run()
 	if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
@@ -39,7 +69,7 @@ function love.run()
 			love.graphics.origin()
 			love.graphics.clear(love.graphics.getBackgroundColor())
 			
-			if love.draw then love.draw() end -- might want to scrap love.draw
+			--if love.draw then love.draw() end -- might want to scrap love.draw
 			
             controller.base:draw()
 
