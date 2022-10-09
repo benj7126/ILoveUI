@@ -22,10 +22,12 @@ Controller:setKeyValue("edwindow", "DrawCall", function ()
     EditingController:draw()
 end)
 
+local addedElements = 0
+
 local allElementList = {}
 
 local elementBase=Controller.allElements.TreeSegment:new()
-elementBase.pos = Vector:new(0, 30)
+elementBase.pos = Vector:new(5, 5)
 elementBase.data.IncrementY = 5
 elementBase.data.IncrementX = 5
 elementBase:setParent(Controller.keys["elwindow"])
@@ -42,19 +44,25 @@ function addElementAsChildFor(newElement, fatherElement)
     local list = Controller.allElements.TreeSegment:new()
     list.data.IncrementY = 5
     list.data.IncrementX = 5
-    print(list.parent, "f"); for i, v in pairs(parrentElement.children) do print(i, v, "k") end
+
+    list.drawPriority = addedElements
+    addedElements = addedElements + 1
+    
     list:setParent(parrentElement)
-    print(list.parent, "f"); for i, v in pairs(parrentElement.children) do print(i, v, "k") end
 
     local newButton = Controller.allElements.Button:new()
     newButton.data.Size = Vector:new(100, 30)
     list:setMainChild(newButton)
 
-    newButton.data.OnClickHook = function ()
-        selectedElement = newElement
+    newButton.data.OnClickHook = function (b)
+        if b == 1 then
+            selectedElement = newElement
+        elseif b == 2 then
+            list.data.isOpen = not list.data.isOpen
+        end
     end
     
-    allElementList[newElement] = {Button = newButton}
+    allElementList[newElement] = {ListButton = list}
 
     return newElement
 end

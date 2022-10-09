@@ -15,13 +15,12 @@ function Button:new()
 end
 
 function Button:mousepressed(x, y, b)
-    print(x, y)
     --print(x, y, self.name)
     local pos = self:getWorldPos()
     local size = self.data.Size
 
     if x > pos.x and x < pos.x + size.x and y > pos.y and y < pos.y + size.y then
-        self.data.OnClickHook()
+        self.data.OnClickHook(b)
     end
 end
 
