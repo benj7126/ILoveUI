@@ -44,7 +44,7 @@ function DrawableElement:drawThis()
             pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
         end
     end
-    print(pos.x, pos.y, targetSize.x*scaleX, targetSize.y*scaleY)
+    --print(pos.x, pos.y, targetSize.x*scaleX, targetSize.y*scaleY)
 
     
     local stencilFunction = function () love.graphics.rectangle("fill", pos.x, pos.y, targetSize.x*scaleX, targetSize.y*scaleY) end
@@ -55,8 +55,7 @@ function DrawableElement:drawThis()
     love.graphics.setStencilTest("equal", value+1)
 
     if self.data.AutoTranslate then
-        local posDiff = pos - self:getWorldPos()
-        love.graphics.translate(posDiff.x, posDiff.y)
+        love.graphics.translate(pos.x, pos.y)
     end
     
     love.graphics.scale(scaleX, scaleY)
@@ -69,8 +68,7 @@ function DrawableElement:drawThis()
     love.graphics.scale(1/scaleX, 1/scaleY)
 
     if self.data.AutoTranslate then
-        local posDiff = pos - self:getWorldPos()
-        love.graphics.translate(-posDiff.x, -posDiff.y)
+        love.graphics.translate(-pos.x, -pos.y)
     end
 end
 

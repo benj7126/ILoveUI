@@ -20,44 +20,61 @@ UIWIndow.drawPriority = -1
 
 UIWIndow:setParent(SE)
 
--- local OtherUI=Empty:new();
--- C:setKey("UI", OtherUI)
--- --OtherUI.isActive = false
+local OtherUI=Empty:new();
+C:setKey("UI", OtherUI)
+--OtherUI.isActive = false
 
--- OtherUI:setParent(SE)
+OtherUI:setParent(SE)
 
---  -- element tree
--- local SideBar1 = Rectangle:new()
--- SideBar1.data.Color = {0.5, 0.5, 0.5, 1}
--- SideBar1.data.Size = Vector:new(1920/4, 1080)
--- SideBar1:setParent(OtherUI)
+ -- element tree
+local SideBar1 = Rectangle:new()
+SideBar1.data.Color = {0.5, 0.5, 0.5, 1}
+SideBar1.data.Size = Vector:new(1920/4, 1080)
+SideBar1:setParent(OtherUI)
 
--- local ScrollE1 = Scroll:new()
--- ScrollE1:setParent(SideBar1)
+local ScrollE1 = Scroll:new()
+ScrollE1:setParent(SideBar1)
 
---  -- editing element
--- local SideBar2 = Rectangle:new()
--- SideBar2.pos = Vector:new(1920/4*3, 0)
--- SideBar2.data.Color = {0.5, 0.5, 0.5, 1}
--- SideBar2.data.Size = Vector:new(1920/4, 1080)
--- SideBar2:setParent(OtherUI)
+local elementWindow = ScaleElement:new()
+C:setKey("elwindow", elementWindow)
 
--- local ScrollE2 = Scroll:new()
--- ScrollE2:setParent(SideBar2)
+elementWindow.data.Size = Vector:new(1920/4, 1080)
+elementWindow.data.TargetSize = Vector:new(1920/4, 1080)
+
+elementWindow:setParent(ScrollE1)
+
+ -- editing element
+local SideBar2 = Rectangle:new()
+SideBar2.pos = Vector:new(1920/4*3, 0)
+SideBar2.data.Color = {0.5, 0.5, 0.5, 1}
+SideBar2.data.Size = Vector:new(1920/4, 1080)
+SideBar2:setParent(OtherUI)
+
+local ScrollE2 = Scroll:new()
+ScrollE2:setParent(SideBar2)
+
+local editWindow = DrawableElement:new()
+C:setKey("edwindow", editWindow)
+
+editWindow.data.Size = Vector:new(1920/4, 1080)
+editWindow.data.TargetSize = Vector:new(1920/4, 1080)
+
+editWindow:setParent(ScrollE2)
 
 
 
--- local uimessage = Rectangle:new()
--- uimessage.data.Color = {1, 1, 1, 1}
--- uimessage.drawPriority = 10
--- uimessage.pos = Vector:new(1920-122, 1080-20)
--- uimessage.data.Size = Vector:new(122, 20)
--- uimessage:setParent(OtherUI)
+ -- txt message
+local uimessage = Rectangle:new()
+uimessage.data.Color = {1, 1, 1, 1}
+uimessage.drawPriority = 10
+uimessage.pos = Vector:new(1920-122, 1080-20)
+uimessage.data.Size = Vector:new(122, 20)
+uimessage:setParent(OtherUI)
 
--- local uimessageT = Text:new()
--- uimessageT.pos = Vector:new(2, 2)
--- uimessageT.data.Text = "press u to toggle ui"
--- uimessageT:setParent(uimessage)
+local uimessageT = Text:new()
+uimessageT.pos = Vector:new(2, 2)
+uimessageT.data.Text = "press u to toggle ui"
+uimessageT:setParent(uimessage)
 
 
 --[[

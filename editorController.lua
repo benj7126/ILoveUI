@@ -1,3 +1,5 @@
+require "vector"
+
 local C = require("ElementController"):new()
 
 local function setup(str)
@@ -39,6 +41,8 @@ function love.run()
 				end
 				love.handlers[name](a,b,c,d,e,f)
                 C:eventChain(name, a,b,c,d,e,f)
+				MainController:eventChain(name, a,b,c,d,e,f)
+				EditingController:eventChain(name, a,b,c,d,e,f)
 			end
 		end
 
