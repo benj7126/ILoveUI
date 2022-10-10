@@ -93,6 +93,14 @@ function Element:setParent(parent)
     self.parent.children[self] = true
 end
 
+function Element:remParent()
+    if self.parent then
+        self.parent.children[self] = nil
+    end
+    
+    self.parent = nil
+end
+
 function Element:getWorldPos()
     local parentPos = Vector:new(0, 0)
     if self.parent then

@@ -4,7 +4,7 @@ local Button = Rectangle:new()
 function Button:new()
     local element = Rectangle:new()
 
-    element.data["OnClickHook"] = function () print("a") end
+    element.data["OnClickHook"] = function () print("Remember to overwrite [OnClickHook]") end
     
     element.name = "Button"
 

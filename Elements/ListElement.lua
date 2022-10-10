@@ -26,7 +26,6 @@ function ElementList:draw()
     for i, v in pairs(self:getChildPriorityList()) do
         local addIncrementY = self.data.IncrementY
         local addIncrementX = self.data.IncrementX
-
         if self.data.AutoAddIncrement then
             if v.data.Size then
                 addIncrementY = addIncrementY + v.data.Size.y
@@ -71,7 +70,7 @@ function ElementList:eventChain(name, x, y, ...)
 
     else
         for i, v in pairs(self.children) do
-            i:eventChain(name, ...)
+            i:eventChain(name, x, y, ...)
         end
     end
 end

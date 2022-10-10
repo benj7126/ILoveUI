@@ -10,18 +10,26 @@ function ElementController:new()
 
     controller.allElements = {["UIElement"] = require("UIElement"), ["Vector"] = Vector, ["C"]=controller}
 
-    local elements = love.filesystem.getDirectoryItems("Elements")
-
-    for i, v in pairs(elements) do
-        local name = v:sub(1, #v-4)
-        controller.allElements[name] = require ("Elements/"..name)
-    end
-
-
     setmetatable(controller, self)
     self.__index = self
 
+    controller:loadFromPath("Elements")
+
     return controller
+end
+
+function ElementController:loadFromPath(path)
+    local elements = love.filesystem.getDirectoryItems(path)
+
+    for i, v in pairs(elements) do
+        if v:sub(#v-3, #v) == ".lua" then
+            local name = v:sub(1, #v-4)
+            print("loaded: "..path.."/"..name)
+            self.allElements[name] = require (path.."/"..name)
+        else
+            self:loadFromPath(path.."/"..v)
+        end
+    end
 end
 
 function ElementController:eventChain(...)

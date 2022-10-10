@@ -1,6 +1,18 @@
 local Element = require "UIElement"
 local TreeSegment = Element:new();
 
+local dropdownDrawF = function (self, x, y, w, h)
+    x = x + self.data.IncrementX
+    local mode = "fill"
+    if self.data.isOpen then
+        mode = "line"
+    end
+
+    if w > h then w = h else h = w end
+
+    love.graphics.rectangle(mode, x, y, w, h)
+end
+
 function TreeSegment:new()
     local element = Element:new()
 
@@ -10,6 +22,8 @@ function TreeSegment:new()
     element.data["isOpen"] = true
     
     element.data["mainChild"] = nil
+
+    element.data["drawDropdown"] = dropdownDrawF
 
     element.data.Size = Vector:new(0, 0)
     
@@ -27,9 +41,8 @@ function TreeSegment:draw()
 
     local pos = self:getWorldPos()
 
-
-    local totalIncrementX = pos.x
-    local totalIncrementY = pos.y
+    local totalIncrementX = 0
+    local totalIncrementY = 0
 
     if self.data.mainChild then
         local child = self.data.mainChild
@@ -37,6 +50,10 @@ function TreeSegment:draw()
         child:draw()
         
         if child.data.Size then
+            local childPos = child:getWorldPos()
+            love.graphics.setColor(1, 1, 1)
+            self.data.drawDropdown(self, totalIncrementX + child.data.Size.x + childPos.x, totalIncrementY + childPos.y, child.data.Size.x, child.data.Size.y)
+
             totalIncrementY = totalIncrementY + child.data.Size.y
         end
 
@@ -62,6 +79,7 @@ end
 
 function TreeSegment:setMainChild(element)
     self.data.mainChild = element
+    element.parent = self
 end
 
 function TreeSegment:eventChain(name, x, y, ...)
@@ -74,8 +92,8 @@ function TreeSegment:eventChain(name, x, y, ...)
         self[name](self, ...)
     end
     if name == "mousepressed" or name == "mousemoved" or name == "mousereleased" then
-        local totalIncrementX = pos.x
-        local totalIncrementY = pos.y
+        local totalIncrementX = 0
+        local totalIncrementY = 0
 
         if self.data.mainChild then
             local child = self.data.mainChild
@@ -90,19 +108,21 @@ function TreeSegment:eventChain(name, x, y, ...)
             totalIncrementY = totalIncrementY + self.data.IncrementY
         end
 
-        for i, v in pairs(self:getChildPriorityList()) do
-            v:eventChain(name, x-totalIncrementX, y-totalIncrementY, ...)
+        if self.data.isOpen then
+            for i, v in pairs(self:getChildPriorityList()) do
+                v:eventChain(name, x-totalIncrementX, y-totalIncrementY, ...)
 
-            if v.data.Size then
-                totalIncrementY = totalIncrementY + v.data.Size.y
+                if v.data.Size then
+                    totalIncrementY = totalIncrementY + v.data.Size.y
+                end
+        
+                totalIncrementY = totalIncrementY + self.data.IncrementY
             end
-    
-            totalIncrementY = totalIncrementY + self.data.IncrementY
         end
     
     else
         for i, v in pairs(self.children) do
-            i:eventChain(name, ...)
+            i:eventChain(name, x, y, ...)
         end
     end
 end

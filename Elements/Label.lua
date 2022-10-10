@@ -62,7 +62,7 @@ function Label:drawThis()
     end
 
     love.graphics.setColor(0, 0, 0)
-
+    
     love.graphics.printf(text, self.data.Font,
     pos.x, pos.y, limit, self.data.Align)
 

@@ -127,7 +127,7 @@ function ScaleElement:eventChain(name, x, y, ...)
         end
     else
         for i, v in pairs(self.children) do
-            i:eventChain(name, ...)
+            i:eventChain(name, x, y, ...)
         end
     end
 end

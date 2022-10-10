@@ -1,3 +1,5 @@
+-- memo, make set default button
+
 require "vector"
 
 MainController = require("ElementController"):new()
@@ -7,6 +9,14 @@ MainController.base = Base;
 EditingController = require("ElementController"):new()
 local editingBase=EditingController.allElements.UIElement:new()
 EditingController.base = editingBase;
+
+local IsWriitng = false
+local startWriting = function ()
+    IsWriitng = true
+end
+local stopWriting = function ()
+    IsWriitng = false
+end
 
 local Controller = require("editorController")("UI.lua")
 
@@ -19,6 +29,9 @@ local markRec = Controller.allElements.Rectangle:new()
 markRec.data.Color = {1, 1, 0, 0.4}
 
 function selectElement(element)
+    updateElementEditor(element)
+    if not element then markRec:remParent(); return end
+
     local listElement = allElementList[element].ListButton
     local button = listElement.data.mainChild
 
@@ -28,6 +41,68 @@ function selectElement(element)
 
         selectedElement = element
     end
+    print(element.key)
+end
+
+function updateElementEditor(element)
+    local parent = Controller.keys["edwindow"]
+    parent.children = {} -- clear the children
+
+    if not element then return end
+
+    local listE = Controller.allElements.ListElement:new()
+    listE.pos = Vector:new(5, 5)
+    listE.data.IncrementY = 5
+    listE:setParent(parent)
+    
+    local editor = {"key", "drawPriority"}--{"pos", "key", "drawPriority", "isVisible", "isActive"}
+    for i, v in ipairs(editor) do
+        --element[v]
+        local baseRect = Controller.allElements.Rectangle:new()
+        baseRect.data.Size = Vector:new(100, 30)
+        baseRect:setParent(listE)
+
+        local ValLabel = Controller.allElements.Text:new()
+        ValLabel.pos = Vector:new(0, 6)
+        ValLabel.data.Align = "center"
+        ValLabel.data.Text = v
+
+        ValLabel:setParent(baseRect)
+
+        local valRect = Controller.allElements.Rectangle:new()
+        valRect.data.Size = Vector:new(100, 30)
+        valRect.pos = Vector:new(120, 0)
+        valRect:setParent(baseRect)
+
+        setupEditorElement(element, element[v], v):setParent(valRect)
+    end
+end
+
+function setupEditorElement(baseElement, value, valueName)
+    local ValMod;
+    
+    if type(value) == "string" or type(value) == "number" then
+        if type(value) == "string" then
+            ValMod = Controller.allElements.ModifyString:new()
+        else
+            ValMod = Controller.allElements.ModifyNumber:new()
+        end
+
+        ValMod.data.StartWriting = startWriting
+        ValMod.data.StopWriting = stopWriting
+
+        ValMod.data.Align = "center"
+    end
+
+    ValMod.pos = Vector:new(0, 6)
+    
+    ValMod.data.valueData = baseElement[valueName]
+
+    ValMod.data.passValue = function (val)
+        baseElement[valueName] = val
+    end
+
+    return ValMod
 end
 
 Controller:setKeyValue("window", "DrawCall", function ()
@@ -36,15 +111,15 @@ Controller:setKeyValue("window", "DrawCall", function ()
     MainController:draw()
 end)
 
-Controller:setKeyValue("edwindow", "DrawCall", function ()
-    EditingController:draw()
-end)
-
 local elementBase=Controller.allElements.TreeSegment:new()
 elementBase.pos = Vector:new(5, 5)
 elementBase.data.IncrementY = 5
 elementBase.data.IncrementX = 5
-elementBase:setParent(Controller.keys["elwindow"])
+elementBase:setParent(Controller.keys["etwindow"])
+
+Controller.keys["etwindow"].update = function (self, dt)
+    self:setMinMax(-elementBase.data.Size.y, 0)
+end
 
 allElementList[Base] = {ListButton = elementBase}
 
@@ -84,12 +159,16 @@ end
 function love.mousepressed(x, y, b)
     if b == 2 then
         selectedElement = Base
+        selectElement(nil)
     end
     
 end
 
 function love.keypressed(key)
     -- temp
+
+    if IsWriitng then return end
+
     if key == "a" then
         local rec = Controller.allElements.Rectangle:new();
         rec.data.Size = Vector:new(10, 10)

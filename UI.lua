@@ -33,34 +33,22 @@ SideBar1.data.Size = Vector:new(1920/4, 1080)
 SideBar1:setParent(OtherUI)
 
 local ScrollE1 = Scroll:new()
+ScrollE1.data.ScrollScale = 20
+ScrollE1.data.Size = Vector:new(1920/4, 1080)
 ScrollE1:setParent(SideBar1)
-
-local elementWindow = ScaleElement:new()
-C:setKey("elwindow", elementWindow)
-
-elementWindow.data.Size = Vector:new(1920/4, 1080)
-elementWindow.data.TargetSize = Vector:new(1920/4, 1080)
-
-elementWindow:setParent(ScrollE1)
+C:setKey("etwindow", ScrollE1)
 
  -- editing element
+local ScrollE2 = Scroll:new()
+ScrollE2.pos = Vector:new(1920/4*3, 0)
+ScrollE2.data.Size = Vector:new(1920/4, 1080)
+ScrollE2:setParent(OtherUI)
+
 local SideBar2 = Rectangle:new()
-SideBar2.pos = Vector:new(1920/4*3, 0)
 SideBar2.data.Color = {0.5, 0.5, 0.5, 1}
 SideBar2.data.Size = Vector:new(1920/4, 1080)
-SideBar2:setParent(OtherUI)
-
-local ScrollE2 = Scroll:new()
-ScrollE2:setParent(SideBar2)
-
-local editWindow = DrawableElement:new()
-C:setKey("edwindow", editWindow)
-
-editWindow.data.Size = Vector:new(1920/4, 1080)
-editWindow.data.TargetSize = Vector:new(1920/4, 1080)
-
-editWindow:setParent(ScrollE2)
-
+SideBar2:setParent(ScrollE2)
+C:setKey("edwindow", SideBar2)
 
 
  -- txt message
