@@ -15,7 +15,6 @@ function Button:new()
 end
 
 function Button:mousepressed(x, y, b)
-    --print(x, y, self.name)
     local pos = self:getWorldPos()
     local size = self.data.Size
 

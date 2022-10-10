@@ -44,6 +44,8 @@ function selectElement(element)
 end
 
 function updateElementEditor(element)
+    IsWriitng = false
+
     local parent = Controller.keys["edwindow"]
     parent.children = {} -- clear the children
 
@@ -138,6 +140,40 @@ Controller.keys["etwindow"].update = function (self, dt)
     self:setMinMax(-elementBase.data.Size.y, 0)
 end
 
+local addEL = Controller.keys["addEL"]
+
+local listEL = Controller.allElements.ListElement:new()
+listEL.pos = Vector:new(5, 5)
+listEL.data.IncrementY = 5
+listEL:setParent(addEL)
+
+addEL.mousepressed = function (self, x, y, b)
+    if b == "add" then
+        print("a")
+        self.pos = Vector:new(x, y)
+        self.data.Size = Vector:new(120, listEL:calcHeight()+20)
+    end
+end
+
+for i, v in pairs(Controller.allElements) do
+    local b = Controller.allElements.Button:new()
+    b.pos = Vector:new(5, 5)
+    b.data.Size = Vector:new(100, 20)
+
+    b.data.OnClickHook = function ()
+        addElementAsChildFor(v:new(), selectedElement)
+        addEL.isActive = false
+    end
+
+    b:setParent(listEL)
+    
+    local t = Controller.allElements.Text:new()
+    t.data.Text = i
+    t:setParent(b)
+end
+
+
+
 allElementList[Base] = {ListButton = elementBase}
 
 function addElementAsChildFor(newElement, fatherElement)
@@ -187,9 +223,15 @@ function love.keypressed(key)
     if IsWriitng then return end
 
     if key == "a" then
-        local rec = Controller.allElements.Rectangle:new();
-        rec.data.Size = Vector:new(10, 10)
-        addElementAsChildFor(rec, selectedElement)
+        local addEL = Controller.keys["addEL"]
+
+        if not addEL.isActive then
+            addEL.isActive = true
+            local x, y = love.mouse.getPosition()
+            Controller:eventChain("mousepressed", x, y, "add")
+        else
+            addEL.isActive = false
+        end
     end
 
     -- stuff

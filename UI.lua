@@ -52,18 +52,26 @@ C:setKey("edwindow", SideBar2)
 
 
  -- txt message
-local uimessage = Rectangle:new()
-uimessage.data.Color = {1, 1, 1, 1}
-uimessage.drawPriority = 10
-uimessage.pos = Vector:new(1920-122, 1080-20)
-uimessage.data.Size = Vector:new(122, 20)
-uimessage:setParent(OtherUI)
+ local uimessage = Rectangle:new()
+ uimessage.data.Color = {1, 1, 1, 1}
+ uimessage.drawPriority = 10
+ uimessage.pos = Vector:new(1920-122, 1080-20)
+ uimessage.data.Size = Vector:new(122, 20)
+ uimessage:setParent(OtherUI)
+ 
+ local uimessageT = Text:new()
+ uimessageT.pos = Vector:new(2, 2)
+ uimessageT.data.Text = "press u to toggle ui"
+ uimessageT:setParent(uimessage)
 
-local uimessageT = Text:new()
-uimessageT.pos = Vector:new(2, 2)
-uimessageT.data.Text = "press u to toggle ui"
-uimessageT:setParent(uimessage)
-
+ -- addElement
+local MenuElement = Rectangle:new()
+MenuElement.isActive = false
+MenuElement.data.Color = {0.3, 0.3, 0.3, 1}
+MenuElement.drawPriority = 11
+--MenuElement.data.Size = Vector:new(122, 20)
+MenuElement:setParent(OtherUI)
+C:setKey("addEL", MenuElement)
 
 --[[
 local V1=ScaleElement:new();

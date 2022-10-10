@@ -41,6 +41,21 @@ function ElementList:draw()
     love.graphics.translate(-totalIncrementX, -totalIncrementY)
 end
 
+function ElementList:calcHeight()
+    local totalIncrementY = 0
+    for i, v in pairs(self:getChildPriorityList()) do
+        local addIncrementY = self.data.IncrementY
+        if self.data.AutoAddIncrement then
+            if v.data.Size then
+                addIncrementY = addIncrementY + v.data.Size.y
+            end
+        end
+        totalIncrementY = totalIncrementY + addIncrementY
+    end
+    
+    return totalIncrementY
+end
+
 function ElementList:eventChain(name, x, y, ...)
     if not self.isActive then return end
     if not self:allowEvent(name) then return end
