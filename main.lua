@@ -10,7 +10,25 @@ EditingController.base = editingBase;
 
 local Controller = require("editorController")("UI.lua")
 
+local addedElements = 0
+
+local allElementList = {}
+
 local selectedElement = Base
+local markRec = Controller.allElements.Rectangle:new()
+markRec.data.Color = {1, 1, 0, 0.4}
+
+function selectElement(element)
+    local listElement = allElementList[element].ListButton
+    local button = listElement.data.mainChild
+
+    if button then
+        markRec:setParent(button)
+        markRec.data.Size = button.data.Size
+
+        selectedElement = element
+    end
+end
 
 Controller:setKeyValue("window", "DrawCall", function ()
     love.graphics.setColor(0.6, 0.6, 0.6)
@@ -21,10 +39,6 @@ end)
 Controller:setKeyValue("edwindow", "DrawCall", function ()
     EditingController:draw()
 end)
-
-local addedElements = 0
-
-local allElementList = {}
 
 local elementBase=Controller.allElements.TreeSegment:new()
 elementBase.pos = Vector:new(5, 5)
@@ -56,7 +70,7 @@ function addElementAsChildFor(newElement, fatherElement)
 
     newButton.data.OnClickHook = function (b)
         if b == 1 then
-            selectedElement = newElement
+            selectElement(newElement)
         elseif b == 2 then
             list.data.isOpen = not list.data.isOpen
         end
