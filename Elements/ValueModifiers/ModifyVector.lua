@@ -67,8 +67,8 @@ end
 
 function ValueModifierElement:setValue(val)
     self.data["valueData"] = val
-    self.data.RNr.data.Text = tostring(val.x)
-    self.data.GNr.data.Text = tostring(val.y)
+    self.data.RNr.data.valueData = tostring(val.x)
+    self.data.GNr.data.valueData = tostring(val.y)
 end
 
 function ValueModifierElement:keypressed(key)
