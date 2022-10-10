@@ -41,7 +41,6 @@ function selectElement(element)
 
         selectedElement = element
     end
-    print(element.key)
 end
 
 function updateElementEditor(element)
@@ -55,7 +54,10 @@ function updateElementEditor(element)
     listE.data.IncrementY = 5
     listE:setParent(parent)
     
-    local editor = {"key", "drawPriority"}--{"pos", "key", "drawPriority", "isVisible", "isActive"}
+    local editor = {"pos", "key", "drawPriority", "isVisible", "isActive"}
+    for i, v in pairs(element.data) do
+        table.insert(editor, i)
+    end
     for i, v in ipairs(editor) do
         --element[v]
         local baseRect = Controller.allElements.Rectangle:new()
@@ -74,7 +76,15 @@ function updateElementEditor(element)
         valRect.pos = Vector:new(120, 0)
         valRect:setParent(baseRect)
 
-        setupEditorElement(element, element[v], v):setParent(valRect)
+        local r;
+        if element[v] then
+            r = setupEditorElement(element, element[v], v)
+        else
+            r = setupEditorElement(element.data, element.data[v], v)
+        end
+        if r then
+            r:setParent(valRect)
+        end
     end
 end
 
@@ -88,15 +98,22 @@ function setupEditorElement(baseElement, value, valueName)
             ValMod = Controller.allElements.ModifyNumber:new()
         end
 
+        ValMod.pos = Vector:new(0, 6)
+
         ValMod.data.StartWriting = startWriting
         ValMod.data.StopWriting = stopWriting
 
         ValMod.data.Align = "center"
-    end
+    elseif type(value) == "table" and value.isVec then
+        ValMod = Controller.allElements.ModifyVector:new()
 
-    ValMod.pos = Vector:new(0, 6)
+        ValMod.data.RNr.data.StartWriting = startWriting
+        ValMod.data.GNr.data.StopWriting = stopWriting
+    else
+        return
+    end
     
-    ValMod.data.valueData = baseElement[valueName]
+    ValMod:setValue(baseElement[valueName])
 
     ValMod.data.passValue = function (val)
         baseElement[valueName] = val

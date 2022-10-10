@@ -6,7 +6,7 @@ function ValueModifierElement:new()
 
     element.data["valueData"] = ""
     element.data.passValue = function (val)
-        print(val)
+        print(val, "you need to set passValue")
     end
     
     element.name = "ModifyNumber"
@@ -15,6 +15,10 @@ function ValueModifierElement:new()
     self.__index = self
 
     return element
+end
+
+function ValueModifierElement:setValue(val)
+    self.data["valueData"] = val
 end
 
 function ValueModifierElement:drawThis()
@@ -29,7 +33,6 @@ function ValueModifierElement:eventChain(name, ...)
     if name == "textinput" then
         local txt, r = ...
         txt = string.gsub(txt, "[^"..allowed.."]", "")
-        print(txt)
 
         Label.eventChain(self, name, txt, r)
     else

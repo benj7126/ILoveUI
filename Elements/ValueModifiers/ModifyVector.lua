@@ -1,17 +1,63 @@
-local Label = require "Elements.Label"
-local ValueModifierElement = Label:new();
+local Element = require "UIElement"
+local ValueModifierElement = Element:new();
 
 -- not made at all
-
 function ValueModifierElement:new()
-    local element = Label:new()
+    local element = Element:new()
 
-    element.data["valueData"] = ""
+    element.data["valueData"] = Vector:new(0, 0)
     element.data.passValue = function (val)
-        print(val)
+        print(val, "you need to set passValue")
+    end
+
+    local RRec = require "Elements.Rectangle" :new()
+    RRec.data.Size = Vector:new(15, 15)
+    RRec.data.Color = {1, 0, 0, 1}
+    RRec:setParent(element)
+
+    local GRec = require "Elements.Rectangle" :new()
+    GRec.pos = Vector:new(0, 15)
+    GRec.data.Size = Vector:new(15, 15)
+    GRec.data.Color = {0, 1, 0, 1}
+    GRec:setParent(element)
+
+    local BackgroundRRec = require "Elements.Rectangle" :new()
+    BackgroundRRec.pos = Vector:new(15, 0)
+    BackgroundRRec.data.Color = {0.7, 0.7, 0.7, 1}
+    BackgroundRRec.data.Size = Vector:new(85, 15)
+    BackgroundRRec:setParent(RRec)
+    local BackgroundGRec = require "Elements.Rectangle" :new()
+    BackgroundGRec.pos = Vector:new(15, 0)
+    BackgroundGRec.data.Color = {0.7, 0.7, 0.7, 1}
+    BackgroundGRec.data.Size = Vector:new(85, 15)
+    BackgroundGRec:setParent(GRec)
+
+    local RTxt = require "Elements.Text": new()
+    RTxt.data.Text = "X"
+    RTxt.data.Align = "center"
+    RTxt:setParent(RRec)
+    local GTxt = require "Elements.Text": new()
+    GTxt.data.Text = "Y"
+    GTxt.data.Align = "center"
+    GTxt:setParent(GRec)
+
+    element.data.RNr = require "Elements.ValueModifiers.ModifyNumber" :new()
+    element.data.RNr.data.Align = "center"
+    element.data.RNr:setParent(BackgroundRRec)
+    element.data.GNr = require "Elements.ValueModifiers.ModifyNumber" :new()
+    element.data.GNr.data.Align = "center"
+    element.data.GNr:setParent(BackgroundGRec)
+
+    element.data.RNr.data.passValue = function (val)
+        element.data.valueData.x = val or 0
+        element.data.passValue(element.data.valueData)
+    end
+    element.data.GNr.data.passValue = function (val)
+        element.data.valueData.y = val or 0
+        element.data.passValue(element.data.valueData)
     end
     
-    element.name = "ModifyNumber"
+    element.name = "ModifyVector"
 
     setmetatable(element, self)
     self.__index = self
@@ -19,28 +65,22 @@ function ValueModifierElement:new()
     return element
 end
 
-function ValueModifierElement:drawThis()
-    self.data.Text = self.data.valueData
-    Label.drawThis(self)
+function ValueModifierElement:setValue(val)
+    self.data["valueData"] = val
+    self.data.RNr.data.Text = tostring(val.x)
+    self.data.GNr.data.Text = tostring(val.y)
 end
 
-local allowed = "1234567890%."
-
-function ValueModifierElement:eventChain(name, ...)
-    self.data.Text = self.data.valueData
-    if name == "textinput" then
-        local txt, r = ...
-        txt = string.gsub(txt, "[^"..allowed.."]", "")
-        print(txt)
-
-        Label.eventChain(self, name, txt, r)
-    else
-        Label.eventChain(self, name, ...)
-    end
-
-    if self.data.valueData ~= self.data.Text then
-        self.data.valueData = self.data.Text
-        self.data.passValue(tonumber(self.data.valueData))
+function ValueModifierElement:keypressed(key)
+    print(key, "a")
+    if key == "tab" then
+        if self.data.RNr.data.IsWriting then
+            self.data.GNr.data.IsWriting = self.data.RNr.data.IsWriting
+            self.data.RNr.data.IsWriting = not self.data.RNr.data.IsWriting
+        elseif self.data.GNr.data.IsWriting then
+            self.data.RNr.data.IsWriting = self.data.GNr.data.IsWriting
+            self.data.GNr.data.IsWriting = not self.data.GNr.data.IsWriting
+        end
     end
 end
 

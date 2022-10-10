@@ -9,6 +9,8 @@ function Text:new()
     element.data["Limit"] = 0
     element.data["Align"] = "left" -- center and right
     
+    element.data["Color"] = {0, 0, 0, 1} -- center and right
+    
     element.name = "Text"
 
     setmetatable(element, self)
@@ -25,12 +27,13 @@ function Text:drawThis()
         limit = self.parent.data.Size.x
     end
 
-    love.graphics.setColor(0, 0, 0)
+    local r, g, b, a = love.graphics.getColor()
+    love.graphics.setColor(self.data.Color)
 
     love.graphics.printf(self.data.Text, self.data.Font,
     pos.x, pos.y, limit, self.data.Align)
 
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(r, g, b, a)
 end
 
 return Text
