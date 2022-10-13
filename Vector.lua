@@ -5,7 +5,7 @@ function Vector:new(x, y)
 
     vec.x = x or 0
     vec.y = y or 0
-    vec.isVec = true
+    --vec.isVec = true
 
     setmetatable(vec, self)
     self.__index = self

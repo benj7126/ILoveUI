@@ -1,14 +1,19 @@
 local Element = {}
 
-function Element:new(o)
-    local element = o or {}
+function Element:new()
+    local element = {}
 
-    element.calls = {}
+    element.variablesLinkedToParent = {}
+    element.variablesLinkedFromParent = {}
 
-    element.children = {}
+    element.subelements = {} -- elements that make up this element
+    element.children = {} -- elements that are under this 
+    
+    element.parent = nil
+
+    element.C = nil -- the ui Controller, for storing global things i guess
 
     element.pos = Vector:new()
-
     element.isActive = true
 
     setmetatable(element, self)
@@ -17,39 +22,111 @@ function Element:new(o)
     return element
 end
 
-local ignoreList = {"new", "require", "__index", "passCall"}
-local function doIgnore(callName)
-    for i, v in pairs(ignoreList) do
-        if v == callName then
-            return true
+function Element:updateVariables()
+    local p = self.parent
+    if p then
+        for i, v in pairs(self.variablesLinkedToParent) do
+            self[i] = v[1](p[i])
+        end
+        for i, v in pairs(self.variablesLinkedFromParent) do
+            self[i] = v(p[i])
         end
     end
-    
-    return false
 end
 
-function Element:require(elementName)
-    local nElement = require(elementName)
-
-    for i, v in pairs(nElement) do
-        if doIgnore(i) == false then
-            print(i, v)
+function Element:updateParentVariables()
+    local p = self.parent
+    if p then
+        for i, v in pairs(self.variablesLinkedToParent) do
+            p[i] = v[2](self[i])
         end
     end
+end
+
+function Element:linkVarToParent(varname, repFuncIn, repFuncOut)
+    if repFuncIn == nil then repFuncIn = function(value) return value end end
+    if repFuncOut == nil then repFuncOut = function(value) return value end end
+
+    self.variablesLinkedToParent[varname] = {repFuncIn, repFuncOut}
+end
+
+function Element:linkVarFromParent(varname, repFunc)
+    if repFunc == nil then repFunc = function(value) return value end end
+
+    self.variablesLinkedFromParent[varname] = repFunc
+end
+
+function Element:getC()
+    if self.C then
+        return self.C
+    else
+        return self.parent:getC()
+    end
+end
+
+function Element:getWorldPosition()
+    local pos = Vector:new()
+    
+    if self.parent then
+        pos = self.parent:getWorldPosition()
+    end
+
+    pos = pos + self.pos
+
+    return pos
+end
+
+function Element:addSubElement(elementName)
+    local EL = require(elementName):new()
+
+    table.insert(self.subelements, EL)
+    EL.parent = self
+
+    return EL
+end
+
+function Element:clearParent()
+    if self.parent then
+        for i, v in ipairs(self.parent.children) do
+            if v == self then
+                table.remove(self.parent.children, i)
+                self.parent = nil
+                return
+            end
+        end
+    end
+end
+
+function Element:addChild(element)
+    element:clearParent()
+    table.insert(self.children, element)
+    element.parent = self
+end
+
+function Element:setParent(element)
+    self:clearParent()
+    table.insert(element.children, self)
+    self.parent = element
 end
 
 function Element:passCall(name, ...)
+    self:updateVariables()
+
     if not self.isActive then return end
+
+    if self[name] then
+        self[name](self, ...)
+    end
     
-    for i , v in pairs(self.calls) do
-        if v[name] then
-            v[name](self, ...)
-        end
+    for i, v in ipairs(self.subelements) do
+        v:passCall(name, ...)
     end
 
-    for i, v in pairs(self.children) do
-        i:passCall(name, ...)
+    for i, v in ipairs(self.children) do
+        v:passCall(name, ...)
     end
+
+    self:updateParentVariables()
 end
 
 return Element
