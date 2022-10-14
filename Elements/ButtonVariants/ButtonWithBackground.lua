@@ -7,8 +7,8 @@ function Button:new()
     setmetatable(element, self)
     self.__index = self
 
-    local r = element:addSubElement("ILoveUI.Elements.Figures.Rectangle")
-    r:linkVarToParent("size")
+    element.rec = element:addSubElement("ILoveUI.Elements.Figures.Rectangle")
+    element.rec:linkVarToParent("size")
 
     return element
 end

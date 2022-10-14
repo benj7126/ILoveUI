@@ -78,8 +78,10 @@ function ScaleElement:pre_draw(...)
     love.graphics.stencil(self.stencilFunction, "increment", 1, true)
     love.graphics.setStencilTest("equal", value+1)
     
-    love.graphics.scale(1/scale.x, 1/scale.y)
+    love.graphics.scale(scale.x, scale.y)
     self.lastScale = scale
+
+    print(scale)
     return ...
 end
 
@@ -89,7 +91,7 @@ function ScaleElement:post_draw(...)
     love.graphics.stencil(self.stencilFunction, "decrement", 1, true)
     love.graphics.setStencilTest("equal", value-1)
     
-    love.graphics.scale(self.lastScale.x, self.lastScale.y)
+    love.graphics.scale(1/self.lastScale.x, 1/self.lastScale.y)
 end
 
 return ScaleElement

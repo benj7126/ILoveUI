@@ -32,7 +32,7 @@ function Controller:getFont(path, size)
     if path == nil then
         return self.fonts[""]["12"]
     end
-    if self.fonts[path]then
+    if self.fonts[path][tostring(size)] then
         return self.fonts[path][tostring(size)]
     end
 
@@ -46,7 +46,7 @@ function Controller:getFont(path, size)
         self.fonts[path][tostring(size)] = self.fonts[""][tostring(size)]
     end
     
-    return self.fonts[path]
+    return self.fonts[path][tostring(size)]
 end
 
 function Controller:setBaseElement(Element)

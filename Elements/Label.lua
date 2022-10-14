@@ -8,7 +8,7 @@ function Label:new()
     element.text = ""
     
     element.font = ""
-    element.fontSize = nil
+    element.fontSize = 12
 
     element.limit = 1000
     element.align = "left"
