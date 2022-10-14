@@ -1,6 +1,7 @@
 local EL = require("ILoveUI.Elements.Figure")
 local Rectangle = EL:new()
 
+
 function Rectangle:new()
     local element = EL:new()
 

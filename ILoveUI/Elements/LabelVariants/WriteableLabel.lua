@@ -25,6 +25,7 @@ function Label:mousepressed(x, y, b)
         local pos = self:getWorldPosition()
         local w, h = self.limit, self.font.font:getHeight()
         
+        print(x > pos.x, x < pos.x+w, y > pos.y, y < pos.y+h)
         if x > pos.x and x < pos.x+w and y > pos.y and y < pos.y+h then
             local C = self:getC();
             self.writing = true

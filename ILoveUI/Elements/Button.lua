@@ -1,5 +1,3 @@
-local utf8 = require("utf8")
-
 local EL = require("ILoveUI.Elements.Label")
 local Label = EL:new()
 

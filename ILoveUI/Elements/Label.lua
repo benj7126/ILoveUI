@@ -7,7 +7,8 @@ function Label:new()
     element.color = {1, 1, 1, 1}
     element.text = ""
     
-    element.font = require("ILoveUI.Fonts.DefaultFont") -- dose the new thing in the file
+    element.font = ""
+    element.fontSize = nil
 
     element.limit = 1000
     element.align = "left"
@@ -25,8 +26,10 @@ function Label:new()
 end
 
 function Label:drawText()
+    local pos = self:getWorldPosition()
+    local C = self:getC()
     love.graphics.setColor(self.color)
-    love.graphics.printf(self.text, self.font.font, self.pos.x, self.pos.y, self.limit, self.align, self.rotation, self.scale.x, self.scale.y, self.origin.x, self.origin.y, self.shearing.x, self.shearing.y)
+    love.graphics.printf(self.text, C:getFont(self.font, self.fontSize), pos.x, pos.y, self.limit, self.align, self.rotation, self.scale.x, self.scale.y, self.origin.x, self.origin.y, self.shearing.x, self.shearing.y)
 end
 
 function Label:draw()

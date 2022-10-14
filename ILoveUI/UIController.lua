@@ -6,6 +6,9 @@ local Controller = {}
 function Controller:new()
     local c = {}
 
+    c.fonts = {[""]={["12"]=love.graphics.newFont(12)}}
+    c.images = {}
+
     c.writing = 0
     c.keys = {}
 
@@ -15,6 +18,35 @@ function Controller:new()
     c:link()
 
     return c
+end
+
+function Controller:getImage(path)
+    if not self.images[path] then
+        self.images[path] = love.graphics.newImage(path)
+    end
+    
+    return self.images[path]
+end
+
+function Controller:getFont(path, size)
+    if path == nil then
+        return self.fonts[""]["12"]
+    end
+    if self.fonts[path]then
+        return self.fonts[path][tostring(size)]
+    end
+
+    local font = love.graphics.newFont(path, size)
+
+    if font == nil then
+        if not self.fonts[""][tostring(size)] then
+            self.fonts[""][tostring(size)] = love.graphics.newFont(size)
+        end
+
+        self.fonts[path][tostring(size)] = self.fonts[""][tostring(size)]
+    end
+    
+    return self.fonts[path]
 end
 
 function Controller:setBaseElement(Element)

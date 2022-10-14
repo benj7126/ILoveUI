@@ -109,11 +109,7 @@ function Element:setParent(element)
     self.parent = element
 end
 
-function Element:passCall(name, ...)
-    self:updateVariables()
-
-    if not self.isActive then return end
-
+function Element:tryCalls(name, ...)
     if self[name] then
         self[name](self, ...)
     end
@@ -124,6 +120,27 @@ function Element:passCall(name, ...)
 
     for i, v in ipairs(self.children) do
         v:passCall(name, ...)
+    end
+end
+
+function Element:passCall(name, ...)
+    self:updateVariables()
+    if not self.isActive then return end
+
+    local doIgnore = false
+    if self["ignore_"..name] then
+        doIgnore = self["ignore_"..name](self, ...)
+    end
+
+    if doIgnore == false then
+        if self["pre_"..name] then
+            self:tryCalls(name, self["pre_"..name](self, ...))
+        else
+            self:tryCalls(name, ...)
+        end
+        if self["post_"..name] then
+            self["post_"..name](self, ...)
+        end
     end
 
     self:updateParentVariables()
