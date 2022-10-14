@@ -1,4 +1,4 @@
-require "Vector"
+require "ILoveUI.Vector"
 love.keyboard.setKeyRepeat(true)
 
 local Controller = {}
