@@ -11,6 +11,8 @@ function Element:new()
     
     element.parent = nil
 
+    element.drawPriority = 0
+
     element.C = nil -- the ui Controller, for storing global things i guess
 
     element.pos = Vector:new()
@@ -20,6 +22,36 @@ function Element:new()
     self.__index = self
 
     return element
+end
+
+local function sortListOfElements(elements)
+    local elementsToReturn = {}
+
+    for _, v in pairs(elements) do
+        local didAdd = false
+        
+        for i, v2 in pairs(elementsToReturn) do
+            if v.drawPriority < v2.drawPriority then
+                table.insert(elementsToReturn, i, v)
+                didAdd = true
+                break
+            end
+        end
+
+        if didAdd == false then
+            table.insert(elementsToReturn, v)
+        end
+    end
+
+    return elementsToReturn
+end
+
+function Element:getSortedChildList()
+    return sortListOfElements(self.children)
+end
+
+function Element:getSortedSubElementList()
+    return sortListOfElements(self.subelements)
 end
 
 function Element:updateVariables()
@@ -114,11 +146,11 @@ function Element:tryCalls(name, ...)
         self[name](self, ...)
     end
     
-    for i, v in ipairs(self.subelements) do
+    for i, v in ipairs(self:getSortedSubElementList()) do
         v:passCall(name, ...)
     end
 
-    for i, v in ipairs(self.children) do
+    for i, v in ipairs(self:getSortedChildList()) do
         v:passCall(name, ...)
     end
 end

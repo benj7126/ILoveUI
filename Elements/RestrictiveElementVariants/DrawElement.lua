@@ -21,38 +21,13 @@ function DrawElement:tryCalls(name, ...)
         self[name](self, ...)
     end
     
-    for i, v in ipairs(self.subelements) do
+    for i, v in ipairs(self:getSortedSubElementList()) do
         v:passCall(name, ...)
     end
 
-    for i, v in ipairs(self.children) do
+    for i, v in ipairs(self:getSortedChildList()) do
         v:passCall(name, ...)
     end
-end
-
-function DrawElement:pre_draw(...)
-    local pos, scale = self:local_getWorldPosition()
-    self.stencilFunction = function () love.graphics.rectangle("fill", pos.x, pos.y, self.size.x*(1/scale.x), self.size.y*(1/scale.y)) end
-
-    local _, value = love.graphics.getStencilTest()
-    
-    love.graphics.stencil(self.stencilFunction, "increment", 1, true)
-    love.graphics.setStencilTest("equal", value+1)
-    
-    love.graphics.scale(scale.x, scale.y)
-    self.lastScale = scale
-
-    print(scale)
-    return ...
-end
-
-function DrawElement:post_draw(...)
-    local _, value = love.graphics.getStencilTest()
-    
-    love.graphics.stencil(self.stencilFunction, "decrement", 1, true)
-    love.graphics.setStencilTest("equal", value-1)
-    
-    love.graphics.scale(1/self.lastScale.x, 1/self.lastScale.y)
 end
 
 return DrawElement
