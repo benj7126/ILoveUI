@@ -35,16 +35,15 @@ function ScaleElement:local_getWorldPosition() -- (and scale)
 
     if scaleY < scaleX then scaleX = scaleY else scaleY = scaleX end
 
-    print(pos, self.center, "S")
-    if self.center then
+    if self.center and self.keepRatio then
         if scaleX < orgScaleX then
-            pos = pos + Vector:new((orgScaleX-scaleX)*targetSize.x/2, 0)
+            pos = pos + Vector:new((1-(scaleX/orgScaleX))*size.x/2, 0)
         end
         if scaleY < orgScaleY then
-            pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
+            pos = pos + Vector:new(0, (1-(scaleY/orgScaleY))*size.y/2)
         end
     end
-    print(pos, self.center)
+    --print(pos, self.center)
 
     if self.keepRatio then
         return pos, Vector:new(scaleX, scaleY)
@@ -55,8 +54,7 @@ end
 
 function ScaleElement:getWorldPosition() -- (and scale)
     local pos, scale = self:local_getWorldPosition();
-
-    return Vector:new(pos.x*scale.x, pos.y*scale.y)
+    return Vector:new(pos.x*(1/scale.x), pos.y*(1/scale.y))
 end
 
 local function ModifyMouseEvents(self, x, y, ...)
@@ -75,7 +73,7 @@ end
 
 function ScaleElement:pre_draw(...)
     local pos, scale = self:local_getWorldPosition()
-    self.stencilFunction = function () love.graphics.rectangle("fill", pos.x, pos.y, self.size.x*(1/scale.x), self.size.y*(1/scale.y)) end
+    self.stencilFunction = function () love.graphics.rectangle("fill", pos.x, pos.y, self.size.x, self.size.y) end
 
     local mode, value = love.graphics.getStencilTest()
     
@@ -92,10 +90,10 @@ end
 function ScaleElement:post_draw(...)
     local mode, value, scale = self.lastScale[1], self.lastScale[2], self.lastScale[3]
     
+    love.graphics.scale(1/scale.x, 1/scale.y)
+
     love.graphics.stencil(self.stencilFunction, "decrement", 1, true)
     love.graphics.setStencilTest(mode, value)
-    
-    love.graphics.scale(1/scale.x, 1/scale.y)
 end
 
 return ScaleElement
