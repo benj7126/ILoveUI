@@ -31,7 +31,7 @@ local function sortListOfElements(elements)
         local didAdd = false
         
         for i, v2 in pairs(elementsToReturn) do
-            if v.drawPriority < v2.drawPriority then
+            if v.drawPriority > v2.drawPriority then
                 table.insert(elementsToReturn, i, v)
                 didAdd = true
                 break
@@ -98,9 +98,12 @@ end
 
 function Element:getWorldPosition()
     local pos = Vector:new()
-    
+
     if self.parent then
         pos = self.parent:getWorldPosition()
+        if self.parent.getAditionalOffset then
+            pos = pos + self.parent:getAditionalOffset(self)
+        end
     end
 
     pos = pos + self.pos

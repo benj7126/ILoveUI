@@ -7,8 +7,8 @@ function Button:new()
     setmetatable(element, self)
     self.__index = self
 
-    local r = element:addSubElement("ILoveUI.Elements.Image")
-    r:linkVarToParent("size")
+    self.img = element:addSubElement("ILoveUI.Elements.Image")
+    self.img:linkVarToParent("size")
 
     return element
 end

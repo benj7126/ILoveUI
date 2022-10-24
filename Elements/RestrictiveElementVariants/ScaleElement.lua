@@ -33,10 +33,9 @@ function ScaleElement:local_getWorldPosition() -- (and scale)
     local orgScaleX, orgScaleY = size.x/targetSize.x, size.y/targetSize.y
     local scaleX, scaleY = orgScaleX, orgScaleY
 
-    if self.keepRatio then
-        if scaleY < scaleX then scaleX = scaleY else scaleY = scaleX end
-    end
-    
+    if scaleY < scaleX then scaleX = scaleY else scaleY = scaleX end
+
+    print(pos, self.center, "S")
     if self.center then
         if scaleX < orgScaleX then
             pos = pos + Vector:new((orgScaleX-scaleX)*targetSize.x/2, 0)
@@ -45,8 +44,13 @@ function ScaleElement:local_getWorldPosition() -- (and scale)
             pos = pos + Vector:new(0, (orgScaleY-scaleY)*targetSize.y/2)
         end
     end
+    print(pos, self.center)
 
-    return pos, Vector:new(orgScaleX, orgScaleY)
+    if self.keepRatio then
+        return pos, Vector:new(scaleX, scaleY)
+    else
+        return pos, Vector:new(orgScaleX, orgScaleY)
+    end
 end
 
 function ScaleElement:getWorldPosition() -- (and scale)
