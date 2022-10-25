@@ -14,7 +14,10 @@ end
 
 function DrawElement:tryCalls(name, ...)
     if name == "draw" then
+        local pos = self:getWorldPosition()
+        love.graphics.translate(pos.x, pos.y)
         self.drawCall()
+        love.graphics.translate(-pos.x, -pos.y)
     end
 
     if self[name] then

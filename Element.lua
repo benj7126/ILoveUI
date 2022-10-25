@@ -111,6 +111,17 @@ function Element:getWorldPosition()
     return pos
 end
 
+function Element:getMousePosition()
+    local pos;
+    if self.parent then
+        pos = self.parent:getMousePosition()
+    else
+        local x, y = love.mouse.getPosition()
+        pos = Vector:new(x, y)
+    end
+    return pos
+end
+
 function Element:addSubElement(elementName)
     local EL = require(elementName):new()
 

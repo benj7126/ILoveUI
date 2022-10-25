@@ -25,7 +25,7 @@ function Offsetter:getAditionalOffset(child)
 end
 
 function Offsetter:doOffsetCalculations(index)
-    return self.offset*index
+    return self.offset*(index-1)
 end
 
 return Offsetter

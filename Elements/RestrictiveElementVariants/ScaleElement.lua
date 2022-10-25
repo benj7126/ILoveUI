@@ -66,6 +66,22 @@ ScaleElement.pre_mousepressed = ModifyMouseEvents
 ScaleElement.pre_mousereleased = ModifyMouseEvents
 ScaleElement.pre_wheelmoved = ModifyMouseEvents
 
+function ScaleElement:getMousePosition()
+    local offsetPos, scale = self:local_getWorldPosition()
+    local pos;
+    if self.parent then
+        pos = self.parent:getMousePosition()
+    else
+        local x, y = love.mouse.getPosition()
+        pos = Vector:new(x, y)
+    end
+
+    pos.x = (pos.x-offsetPos.x)*(1/scale.x)
+    pos.y = (pos.y-offsetPos.y)*(1/scale.y)
+
+    return pos
+end
+
 function ScaleElement:pre_mousemoved(x, y, mx, my, ...)
     local pos, scale = self:local_getWorldPosition()
     return x*(1/scale.x), y*(1/scale.y), mx*(1/scale.x), my*(1/scale.y), ...
