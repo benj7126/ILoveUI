@@ -26,7 +26,9 @@ end
 
 function ScrollElement:wheelmoved(x, y, ...)
     local mPos = self:getMousePosition()-self.offset
-    print(mPos)
+
+    print(x, y)
+    
     x = x * self.scaleX
     y = y * self.scaleY
     if self.swapScrollAxes then local saveX = x; x = y; y = saveX; end
